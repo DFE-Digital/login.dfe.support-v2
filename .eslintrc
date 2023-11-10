@@ -1,0 +1,20 @@
+{
+    "extends": "airbnb-base",
+    "parserOptions": {
+      "ecmaVersion": 2020,
+      "sourceType": "module"
+    },
+    "rules": {
+      "no-empty": ["error", { "allowEmptyCatch": true }],
+      "prefer-rest-params": "off",
+      "prefer-spread": "off",
+      "no-plusplus": "off",
+      "strict": "off",
+      "no-underscore-dangle": ["error", { "allowAfterThis": true }],
+      "max-len": 0
+    },
+    "env": {
+      "jest": true
+    }
+  }
+  

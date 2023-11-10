@@ -128,3 +128,19 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+
+# Dev env
+/config/
+
+.idea/workspace.xml
+.idea/watcherTasks.xml
+access.log
+.DS_Store
+.vscode/
+
+\.idea/markdown-exported-files\.xml
+
+\.idea/markdown-navigator\.xml
+
+\.idea/markdown-navigator/profiles_settings\.xml
