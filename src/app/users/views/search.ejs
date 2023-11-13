@@ -44,9 +44,13 @@ if (services && services.length > 0) {
     </div>
 <% } %>
 
-<div class="row row-spacer">
-    <div class="col-6">
-        <h1 class="heading-xlarge">Users</h1>
+<div class="govuk-width-container govuk-main-wrapper">
+    <div class="govuk-grid-row">
+
+        <div class="govuk-grid-column-three-quarters">
+        <h1 class="govuk-heading-l text-break govuk-!-margin-bottom-2">
+            Users
+        </h1>
 
             <form method="post">
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
@@ -70,20 +74,20 @@ if (services && services.length > 0) {
                 <% } %>
                 <% } %>
 
-
-                <div class="search-field form-group <%= (locals.validationMessages.criteria !== undefined) ? 'form-group-error' : '' %>">
+                <fieldset class="govuk-fieldset">
+                <div class="search-field govuk-form-group <%= (locals.validationMessages.criteria !== undefined) ? 'form-group-error' : '' %>">
                     <% if (locals.validationMessages.criteria !== undefined) { %>
                         <p class="error-message" id="validation-service"><%=locals.validationMessages.criteria %></p>
                     <% } %>
-                    <fieldset class="search-input">
-                        <label for="criteria" class="vh">Search by name, email or organisation</label>
-                        <input type="text" id="criteria" name="criteria" value="<%= criteria %>" class="form-control"
+
+                        <label for="criteria" class="govuk-label govuk-label--m">Search by name, email or organisation</label>
+                        <input type="text" id="criteria" name="criteria" value="<%= criteria %>" class="govuk-input govuk-!-width-three-quarters"
                                placeholder="Search by name, email or organisation">
-                    </fieldset>
-                    <fieldset class="search-submit">
-                        <button type="submit" class="button">Search</button>
-                    </fieldset>
+
+
+                        <button type="submit" class="govuk-button" data-module="govuk-button">Search</button>
                 </div>
+            </fieldset>
             </form>
             <form method="post" class="show-filters">
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
@@ -97,15 +101,15 @@ if (services && services.length > 0) {
             </form>
 
     </div>
-
-    <div class="col-4 pull-right">
-        <aside>
-            <h2 class="heading-medium">Actions</h2>
-            <ul class="list">
-                <li><a href="/users/new-user">Invite user</a></li>
-                <li><a href="/users/new-k2s-user">Invite KtS user</a></li>
+    <div class="govuk-grid-column-one-quarter">
+        <aside id="actions-menu" class="govuk-!-margin-top-0">
+            <h2 class="govuk-heading-m">Actions</h2>
+            <ul class="govuk-list">
+                <li>
+                    <a class="govuk-link-bold" href="/users/new-user"> Invite user</a></li>
+                <li><a class="govuk-link-bold" href="/users/new-k2s-user"> Invite KtS user</a></li>
                 <% if (locals.canViewRequests) { %>
-                    <li><a href="/access-requests">View user requests</a></li>
+                    <li><a class="govuk-link-bold" href="/access-requests"> View user requests</a></li>
                 <% } %>
             </ul>
         </aside>
@@ -269,4 +273,6 @@ if (services && services.length > 0) {
         <%- include('../../sharedViews/pagination', paginationModel); %>
     </div>
     <% } %>
+
+</div>
 </div>

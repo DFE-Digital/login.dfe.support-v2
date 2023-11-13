@@ -7,7 +7,6 @@ const expressLayouts = require('express-ejs-layouts');
 const csurf = require('csurf');
 const http = require('http');
 const https = require('https');
-const fs = require('fs');
 const path = require('path');
 const helmet = require('helmet');
 const sanitization = require('login.dfe.sanitization');
@@ -23,7 +22,9 @@ const configSchema = require('./infrastructure/config/schema');
 
 configSchema.validate();
 
-https.globalAgent.maxSockets = http.globalAgent.maxSockets = config.hostingEnvironment.agentKeepAlive.maxSockets || 50;
+const maxSockets = config.hostingEnvironment.agentKeepAlive.maxSockets || 50;
+https.globalAgent.maxSockets = maxSockets;
+http.globalAgent.maxSockets = maxSockets;
 
 if (config.hostingEnvironment.applicationInsights) {
   appInsights.setup(config.hostingEnvironment.applicationInsights).start();
@@ -85,7 +86,13 @@ const init = async () => {
     moment,
     urls: {
       profile: config.hostingEnvironment.profileUrl,
+      services: config.hostingEnvironment.servicesUrl,
+      interactions: config.hostingEnvironment.interactionsUrl,
+      help: config.hostingEnvironment.helpUrl,
       assets: assetsUrl,
+      survey: config.hostingEnvironment.surveyUrl,
+      serviceNow: config.hostingEnvironment.serviceNowUrl,
+      supportV1: config.hostingEnvironment.supportV1Url,
     },
     app: {
       title: 'DfE Sign-in Support Console',
@@ -102,8 +109,8 @@ const init = async () => {
   }
 
   let expiryInMinutes = 30;
-  const sessionExpiry = parseInt(config.hostingEnvironment.sessionCookieExpiryInMinutes);
-  if (!isNaN(sessionExpiry)) {
+  const sessionExpiry = parseInt(config.hostingEnvironment.sessionCookieExpiryInMinutes, 10);
+  if (!Number.isNaN(sessionExpiry)) {
     expiryInMinutes = sessionExpiry;
   }
   app.use(session({
