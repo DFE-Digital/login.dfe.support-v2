@@ -50,6 +50,7 @@ web_modules/
 
 # Optional npm cache directory
 .npm
+.npmrc
 
 # Optional eslint cache
 .eslintcache
@@ -144,3 +145,6 @@ access.log
 \.idea/markdown-navigator\.xml
 
 \.idea/markdown-navigator/profiles_settings\.xml
+
+.npmrc
+
