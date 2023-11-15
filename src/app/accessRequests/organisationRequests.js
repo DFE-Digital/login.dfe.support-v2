@@ -5,6 +5,7 @@ const { sendResult } = require('../../infrastructure/utils');
 const {
   mapStatusForSupport, userStatusMap, unpackMultiSelect, search,
 } = require('./utils');
+const config = require('../../infrastructure/config');
 
 const getUserDetails = async (usersForApproval) => {
   const allUserId = flatten(usersForApproval.map((user) => user.user_id));
@@ -55,7 +56,7 @@ const buildModel = async (req) => {
   const model = {
     csrfToken: req.csrfToken(),
     title: 'Requests - DfE Sign-in',
-    backLink: '/users',
+    backLink: `${config.hostingEnvironment.supportV1Url}/users`,
     requests,
     page: result.page,
     numberOfPages: result.numberOfPages,

@@ -5,8 +5,6 @@ const { asyncWrapper } = require('login.dfe.express-error-handling');
 const { isLoggedIn, setCurrentArea, isRequestApprover } = require('../../infrastructure/utils');
 const logger = require('../../infrastructure/logger');
 
-
-
 const { get: getOrganisationRequests, post: postOrganisationRequests } = require('./organisationRequests');
 const { get: getReviewOrganisationRequest, post: postReviewOrganisationRequest } = require('./reviewOrganisationRequest');
 const { get: getRejectOrganisationRequest, post: postRejectOrganisationRequest } = require('./rejectOrganisationRequest');
