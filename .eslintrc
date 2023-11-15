@@ -15,6 +15,14 @@
     },
     "env": {
       "jest": true
-    }
+    },
+    "overrides": [
+      {
+        "files": ["**/*.test.js"],
+        "rules": {
+          "global-require": "off"
+        }
+      }
+    ]
   }
   
