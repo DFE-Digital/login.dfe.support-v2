@@ -1,0 +1,130 @@
+<div class="govuk-width-container govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <% if (locals.flash.info) { %>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="notification notification-success">
+                            <%= locals.flash.info %>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+
+            <% const paginationModel = {
+                method: 'post',
+                csrfToken,
+                currentPage: locals.page,
+                numberOfPages: locals.numberOfPages,
+                totalNumberOfResults: locals.totalNumberOfResults,
+                numberOfResultsOnPage: locals.requests.length,
+                data: [
+                    { key: 'criteria', value: locals.criteria },
+                    { key: 'sort', value: locals.sortBy },
+                    { key: 'sortDir', value: locals.sortOrder },
+                    { key: 'showFilters', value: locals.showFilters },
+                    { key: 'status', value: locals.requestStatuses.reduce((result, element) => {
+                            if(element.isSelected) {
+                                result.push(element.id);
+                            }
+                            return result;
+                        }, [])}
+                    ]
+                } %>
+
+            <h1 class="govuk-heading-l">
+                Requests
+            </h1>
+
+            <form method="post">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
+                <input type="hidden" name="showFilters" value="<%= showFilters %>"/>
+
+                <% for (let i = 0; i < requestStatuses.length; i += 1) { %>
+                    <% if (requestStatuses[i].isSelected) { %>
+                        <input name="requestStatus" value="<%= requestStatuses[i].id %>" type="hidden">
+                    <% } %>
+                <% } %>
+            </form>
+            <form method="post" class="show-filters">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
+                <input type="hidden" name="page" value="<%= page %>"/>
+                <input type="hidden" name="showFilters" value="<%= !showFilters %>"/>
+                <button type="submit" class="govuk-button govuk-button--secondary"><%= (showFilters ? 'Hide' : 'Show') %> filters</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <% if (showFilters) { %>
+            <div class="govuk-grid-column-one-third">
+                <form method="post">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
+                    <input type="hidden" name="page" value="<%= page %>"/>
+                    <input type="hidden" name="showFilters" value="true"/>
+
+                    <div calss="govuk-form-group">
+                        <div class="dfe-filter-header">
+                            <h2 class="option-select-label govuk-heading-s govuk-!-margin-bottom-0">
+                                Request status
+                            </h2>
+                        </div>
+                        <fieldset class="govuk-fieldset">
+                            <div class="govuk-!-margin-bottom-3 govuk-!-margin-top-3">
+                                <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+                                    <% for (let i = 0; i < requestStatuses.length; i += 1) { %>
+                                        <div class="govuk-checkboxes__item">
+                                            <input class="govuk-checkboxes__input" name="status" value="<%= requestStatuses[i].id %>"
+                                                    type="checkbox" <%= (requestStatuses[i].isSelected ? 'checked="checked"' : '') %>> 
+                                            <label class="govuk-label govuk-checkboxes__label"><%= requestStatuses[i].name %></label>
+                                        </div>
+                                    <% } %>
+                                
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <button class="govuk-button" data-module="govuk-button">Apply filter</button>
+                </form>
+            </div>
+        <% } %>
+
+        <div class="<%= showFilters ? 'govuk-grid-column-two-thirds govuk-!-padding-left-0       govuk-!-padding-right-0' : 'govuk-grid-column-full' %>">
+            <%- include('../../sharedViews/pagination', paginationModel); %>
+            <table class="govuk-table data data">
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row sortable">
+                        <th scope="col" class="govuk-table__header width-15">Requested</th>
+                        <th scope="col" class="govuk-table__header width-20">Requested organisation</th>
+                        <th scope="col" class="govuk-table__header width-15">Requested by</th>
+                        <th scope="col" class="govuk-table__header width-20">Requester email</th>
+                        <th scope="col" class="govuk-table__header width-15">Status</th>
+                        <th scope="col" class="govuk-table__header width-15 govuk-table__header--numeric">Action</th>
+                    </tr>
+                </thead>
+
+                <tbody class="govuk-table__body">
+                    <% if (locals.requests && locals.requests.length === 0) { %>
+                        <tr class="govuk-table__row">
+                            <td class ="govuk-table__cell" colspan="6">
+                                <div class="empty-state">There are no outstanding requests.</div>
+                            </td>
+                        </tr>
+                    <% } else { %>
+                    <% for (let i = 0; i < locals.requests.length; i++) { %>
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell govuk-!-font-size-16"><time datetime="<%= locals.requests[i].created_date %>"><%= moment(locals.requests[i].created_date).fromNow() %></time></td>
+                            <td class="govuk-table__cell govuk-!-font-size-16"><span class="breakable"><%= locals.requests[i].org_name %></span> </td>
+                            <td class="govuk-table__cell govuk-!-font-size-16"><span class="breakable"><%= locals.requests[i].usersName %></span> </td>
+                            <td class="govuk-table__cell govuk-!-font-size-16"><span class="breakable"><%= locals.requests[i].usersEmail %></span> </td>
+                            <td class="govuk-table__cell govuk-!-font-size-16"><span class="breakable"><%= locals.requests[i].statusText.name %></span> </td>
+                            <td class="govuk-table__cell govuk-table__cell--numeric govuk-!-font-size-16"><span class="breakable"><a href="access-requests/<%= locals.requests[i].id %>/review" class="govuk-link">Review request</a></span> </td>
+                        </tr>
+                        <% } %>
+                    <% } %>
+                </tbody>
+            </table>
+            <%- include('../../sharedViews/pagination', paginationModel); %>
+        </div>
+    </div>
+</div>
